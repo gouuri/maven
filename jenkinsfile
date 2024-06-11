@@ -1,44 +1,40 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    environment {
+        BRANCH_NAME = "${env.BRANCH_NAME}"
+    }
+
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                script {
-                    // Checkout the current branch
-                    checkout scm
-                }
+                checkout scm
             }
         }
         stage('Print Branch Name') {
             steps {
-                script {
-                    echo "Building branch: ${env.BRANCH_NAME}"
-                }
+                echo "Building branch: ${env.BRANCH_NAME}"
             }
         }
-        stage('Build') {
+        stage('Build and Test') {
+            when {
+                anyOf {
+                    branch 'dev'
+                    branch 'staging'
+                }
+            }
             steps {
                 script {
                     if (env.BRANCH_NAME == 'dev') {
                         echo "Running build for the dev branch"
-                        // Add your dev branch-specific build steps here
+                        // Add dev branch-specific build steps here
                     } else if (env.BRANCH_NAME == 'staging') {
                         echo "Running build for the staging branch"
-                        // Add your staging branch-specific build steps here
-                    } else {
-                        echo "Running build for the ${env.BRANCH_NAME} branch"
-                        // Add your other branches-specific build steps here
-                    }
-                }
-            }
-        }
-        stage('Test') {
-            steps {
-                script {
-                    if (env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'staging') {
-                        echo "Running tests for ${env.BRANCH_NAME} branch"
-                        // Add your test steps here
+                        // Add staging branch-specific build steps here
                     }
                 }
             }
