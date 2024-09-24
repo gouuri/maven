@@ -22,7 +22,7 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME == 'dev') {
                         echo "Running build for the dev branch"
-                        // Add your dev branch-specific build steps here
+                        // Add your dev branch-specific build step here
                     } else if (env.BRANCH_NAME == 'staging') {
                         echo "Running build for the staging branch"
                         // Add your staging branch-specific build steps here
